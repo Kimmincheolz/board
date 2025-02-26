@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mc.board.mapper.PostMapper">
+
+    <!--게시판 리스트-->
+    <select id="postList">
+        SELECT post_id,user_id,title,created_at,view_count,like_count,updated_at
+        FROM posts
+    </select>
+
+    <!--게시글 작성-->
+    <insert id="insertPost">
+        INSERT INTO posts (user_id, title, content)
+        VALUES (#{userId},#{title},#{content})
+    </insert>
+
+    <!-- 게시글 수정 -->
+    <update id="updatePost">
+        UPDATE posts
+        SET
+        title = #{title},
+        content = #{content},
+        updated_at = CURRENT_TIMESTAMP
+        WHERE post_id = #{postId}
+        AND user_id = #{userId}
+    </update>
+
+
+    <!--게시글 상세 페이지-->
+    <select id="findPost">
+        SELECT post_id,user_id,title,content,created_at, view_count,like_count,updated_at
+        FROM posts
+        WHERE post_id = #{postId}
+    </select>
+
+    <!--게시글 조회수 증가-->
+    <update id="viewUpdate">
+        UPDATE posts
+        SET view_count = view_count+1
+        WHERE post_id = #{postId}
+    </update>
+
+
+
+</mapper>

@@ -9,11 +9,11 @@
 <header>
     <nav>
         <span><a href="/">Home</a></span>
-        <span sec:authorize = "isAnonymous()"><a href="/login">login</a></span>
+        <span sec:authorize = "isAnonymous()"><a href="/user/login">login</a></span>
         <span sec:authorize = "isAuthenticated()"><a href="/logout">Logout</a></span>
-        <span sec:authorize = "isAnonymous()"><a href="/signup">signup</a></span>
+        <span><a href="/post/post">post</a></span>
+        <span sec:authorize = "isAnonymous()"><a href="/user/signup">signup</a></span>
         <span sec:authorize="hasRole('ADMIN')"><a href="/admin/list">userlist</a></span>
-
     </nav>
 </header>
 </body>

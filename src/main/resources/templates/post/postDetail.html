@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 상세보기</title>
+</head>
+<body>
+<div th:replace="~{fragments/header.html}"></div>
+
+<div>
+  <h1 th:text="${post.title}">제목</h1>
+  <p><strong>작성자:</strong> <span th:text="${post.userId}">작성자</span></p>
+  <p><strong>작성일:</strong> <span th:text="${post.createdAt}">작성일</span></p>
+  <p><strong>수정일:</strong> <span th:text="${post.updatedAt}">수정일</span></p> <!-- 수정일 추가 -->
+  <p><strong>조회수:</strong> <span th:text="${post.viewCount}">조회수</span></p>
+  <p><strong>좋아요:</strong> <span th:text="${post.likeCount}">좋아요</span></p>
+  <div th:text="${post.content}">내용</div>
+</div>
+<!-- 작성자만 수정 버튼 보이기 -->
+<div th:if="${post.userId != null and post.userId.equals(loggedInUserId)}">
+  <a href="/post/edit/{postId}" th:href="@{/post/edit/{postId}(postId=${post.postId})}">수정</a>
+</div>
+
+
+
+<div>
+  <a href="/post/post">목록으로</a> <!-- 게시글 목록으로 돌아가기 -->
+</div>
+</body>
+</html>

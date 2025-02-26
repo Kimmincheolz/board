@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{fragments/header.html}"></div>
+
+<h2>게시판 리스트</h2>
+
+<ul>
+    <li th:each="post : ${postList}">
+        <!-- postId와 title을 클릭하면 해당 게시글의 상세 페이지로 이동 -->
+        <span th:text="${post.postId}">
+        <!-- 게시글 ID를 표시 -->
+    </span>
+        <a th:href="@{/post/{postId}(postId=${post.postId})}" th:text="${post.title}">
+            <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
+        </a>
+        <span><strong>작성자</strong> </span><span th:text="${post.userId}"></span>
+        <span><strong>작성일</strong> </span><span th:text="${post.createdAt}"></span>
+        <span><strong>수정일</strong> </span><span th:text="${post.updatedAt}"></span>
+        <span><strong>조회수</strong> </span><span th:text="${post.viewCount}"></span>
+        <span><strong>좋아요</strong> </span><span th:text="${post.likeCount}"></span>
+    </li>
+</ul>
+
+<span><a sec:authorize="isAuthenticated()" href="/post/postInsert">글작성</a></span>
+</body>
+</html>

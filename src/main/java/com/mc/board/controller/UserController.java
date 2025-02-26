@@ -23,7 +23,7 @@ public class UserController {
     }
 
     // 회원가입 화면
-    @GetMapping("/signup")
+    @GetMapping("/user/signup")
     public String signupPage(Model model) {
         model.addAttribute("userDto", new UserDto());  // 빈 UserDto 객체를 모델에 추가
         return "user/signup";  // signup.html을 반환
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     // 회원가입 처리
-    @PostMapping("/signup")
+    @PostMapping("/user/signup")
     public String signUp(UserDto userDto, Model model) {
         try {
             userService.insertUser(userDto);
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     // 로그인 화면
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String loginPage() {
         return "user/login";  // login.html을 반환
     }
