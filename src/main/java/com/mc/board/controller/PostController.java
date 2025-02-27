@@ -79,6 +79,28 @@ public class PostController {
 
         return "redirect:/post/post";  // 수정된 게시글 상세 페이지로 리다이렉트
     }
+    @PostMapping("/post/delete/{postId}")
+    public String deletePost(@PathVariable("postId") int postId, HttpSession session) {
+        // 세션에서 사용자 ID 가져오기
+        String userId = (String) session.getAttribute("userId");
+
+        // 게시글 삭제를 위한 DTO 생성
+        PostDto postDto = new PostDto();
+        postDto.setPostId(postId);
+        postDto.setUserId(userId);
+
+        // 게시글 삭제 서비스 호출
+        int result = postService.deletePost(postDto);
+
+        // 삭제 성공 여부에 따른 처리
+        if (result > 0) {
+            return "redirect:/post/post";  // 삭제 후 게시글 목록 페이지로 리다이렉트
+        } else {
+            // 삭제 실패 시 에러 메시지 전달
+            return "redirect:/post/post?error=삭제 실패";  // 목록 페이지로 리다이렉트하고 에러 메시지 추가
+        }
+    }
+
 
 
 }

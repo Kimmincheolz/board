@@ -12,10 +12,14 @@
         <input type="text" id="title" name="title" th:value="${post.title}" required>
 
         <label for="content">Content</label>
-        <textarea id="content" name="content" required th:text="${post.content}"></textarea>
-
+<!--        <textarea id="content" name="content" required th:text="${post.content}"></textarea>-->
+        <input type="text" id="content" name="content" th:value="${post.content}" required>
         <button type="submit">Update Post</button>
     </form>
+
+    <div>
+        <a href="/post/post">목록으로</a> <!-- 게시글 목록으로 돌아가기 -->
+    </div>
 </div>
 </body>
 </html>

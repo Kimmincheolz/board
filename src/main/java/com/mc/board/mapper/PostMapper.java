@@ -19,5 +19,7 @@ public interface PostMapper {
 
     int updatePost(PostDto postDto);
 
+    int deletePost(PostDto postDto);
+
 
 }

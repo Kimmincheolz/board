@@ -3,6 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <title>게시글 상세보기</title>
+  <style>
+    /* 공통 버튼 스타일 */
+    .btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 10px;
+      text-align: center;
+    }
+
+    /* 수정 버튼 스타일 */
+    .btn-edit {
+      background-color: #4CAF50; /* 수정 버튼은 녹색 */
+      color: white;
+    }
+
+    /* 삭제 버튼 스타일 */
+    .btn-delete {
+      background-color: #f44336; /* 삭제 버튼은 빨간색 */
+      color: white;
+    }
+
+    /* 삭제 버튼 마우스 오버 스타일 */
+    .btn-delete:hover {
+      background-color: #d32f2f;
+    }
+
+    /* 수정 버튼 마우스 오버 스타일 */
+    .btn-edit:hover {
+      background-color: #45a049;
+    }
+
+    /* 버튼들 사이의 간격 */
+    .btn-container {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 <div th:replace="~{fragments/header.html}"></div>
@@ -16,12 +57,18 @@
   <p><strong>좋아요:</strong> <span th:text="${post.likeCount}">좋아요</span></p>
   <div th:text="${post.content}">내용</div>
 </div>
+
 <!-- 작성자만 수정 버튼 보이기 -->
-<div th:if="${post.userId != null and post.userId.equals(loggedInUserId)}">
-  <a href="/post/edit/{postId}" th:href="@{/post/edit/{postId}(postId=${post.postId})}">수정</a>
+<div th:if="${post.userId != null and post.userId.equals(loggedInUserId)}" class="btn-container">
+  <a href="/post/edit/{postId}" th:href="@{/post/edit/{postId}(postId=${post.postId})}" class="btn btn-edit">수정</a>
 </div>
 
-
+<!-- 작성자만 삭제 버튼 보이기 -->
+<div th:if="${post.userId != null and post.userId.equals(loggedInUserId)}" class="btn-container">
+  <form th:action="@{/post/delete/{postId}(postId=${post.postId})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+    <button type="submit" class="btn btn-delete">삭제</button>
+  </form>
+</div>
 
 <div>
   <a href="/post/post">목록으로</a> <!-- 게시글 목록으로 돌아가기 -->

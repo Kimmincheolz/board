@@ -27,6 +27,13 @@
         AND user_id = #{userId}
     </update>
 
+    <!--게시글 삭제-->
+    <delete id="deletePost">
+        DELETE FROM posts
+        WHERE post_id = #{postId}
+        AND user_id = #{userId}
+    </delete>
+
 
     <!--게시글 상세 페이지-->
     <select id="findPost">

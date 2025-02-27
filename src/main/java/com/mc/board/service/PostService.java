@@ -33,6 +33,8 @@ public class PostService {
         return postMapper.updatePost(postDto);
     }
 
-
+    public int deletePost(PostDto postDto){
+        return postMapper.deletePost(postDto);
+    }
 
 }
