@@ -1,7 +1,9 @@
 package com.mc.board.controller;
 
+import com.mc.board.dto.CommentDto;
 import com.mc.board.dto.PostDto;
 import com.mc.board.dto.LikeDto;
+import com.mc.board.service.CommentService;
 import com.mc.board.service.PostService;
 import com.mc.board.service.LikeService;  // 추가
 import jakarta.servlet.http.HttpSession;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class PostController {
@@ -18,6 +22,11 @@ public class PostController {
 
     @Autowired
     private LikeService likeService;  // LikeService 주입
+
+    @Autowired
+    private CommentService commentService;
+
+
 
     // 게시글 목록 페이지
     @GetMapping("/post/post")
@@ -47,14 +56,59 @@ public class PostController {
     public String findPost(@PathVariable("postId") int postId, Model model, HttpSession session) {
         PostDto postDto = postService.findPost(postId);
         String loggedInUserId = (String) session.getAttribute("userId");
+
         boolean likedByUser = likeService.isLikedByUser(postId, loggedInUserId); // 사용자가 좋아요한 상태 확인
+
+        List<CommentDto> commentList = commentService.commentList(postId);
 
         model.addAttribute("post", postDto);
         model.addAttribute("loggedInUserId", loggedInUserId);
         model.addAttribute("likedByUser", likedByUser); // 좋아요 상태 전달
+        model.addAttribute("commentList", commentList); // 댓글 목록 전달
         postService.viewUpdate(postId);
         return "post/postDetail";
     }
+
+    @PostMapping("/post/{postId}/addComment")
+    public String addComment(@PathVariable("postId") int postId, @RequestParam("content") String content, HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+
+        // CommentDto 객체 생성
+        CommentDto commentDto = new CommentDto();
+        commentDto.setPostId(postId);
+        commentDto.setUserId(userId);
+        commentDto.setContent(content);
+
+        // 댓글 추가
+        commentService.insertComment(commentDto);
+
+        return "redirect:/post/" + postId;  // 댓글 추가 후 게시글 상세 페이지로 리다이렉트
+    }
+
+
+
+
+
+    @PostMapping("/post/{postId}/deleteComment/{commentId}")
+    public String deleteComment(@PathVariable("postId") int postId, @PathVariable("commentId") int commentId, HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setPostId(postId);
+        commentDto.setCommentId(commentId);
+        commentDto.setUserId(userId);
+
+        int result = commentService.deleteComment(commentDto);
+
+        if (result > 0) {
+            return "redirect:/post/" + postId;  // 삭제 후 게시글 상세 페이지로 리다이렉트
+        } else {
+            return "redirect:/post/" + postId + "?error=댓글 삭제 실패";  // 오류 메시지와 함께 리다이렉트
+        }
+    }
+
+
+
 
     // 게시글 수정 페이지
     @GetMapping("/post/edit/{postId}")

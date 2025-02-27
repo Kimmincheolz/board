@@ -96,6 +96,35 @@
   </form>
 </div>
 
+<!-- 댓글 입력 폼 -->
+<div class="comment-form">
+  <h3>댓글 추가</h3>
+  <form th:action="@{/post/{postId}/addComment(postId=${post.postId})}" method="post">
+    <textarea name="content" placeholder="댓글을 입력하세요" required></textarea><br>
+    <button type="submit" class="btn btn-like">댓글 추가</button>
+  </form>
+</div>
+
+<!-- 댓글 목록 -->
+<div class="comment-list">
+  <h3>댓글</h3>
+  <div th:each="comment : ${commentList}">
+    <div class="comment-item">
+      <p class="comment-author" th:text="${comment.userId}">댓글 작성자</p>
+      <p class="comment-date" th:text="${comment.createdAt}">작성일</p>
+      <p class="comment-content" th:text="${comment.content}">댓글 내용</p>
+
+      <!-- 댓글 작성자만 삭제 버튼 보이기 -->
+      <div th:if="${comment.userId != null and comment.userId.equals(loggedInUserId)}" class="btn-container">
+        <form th:action="@{/post/{postId}/deleteComment/{commentId}(postId=${post.postId}, commentId=${comment.commentId})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+          <button type="submit" class="btn btn-delete">삭제</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div>
   <a href="/post/post">목록으로</a> <!-- 게시글 목록으로 돌아가기 -->
 </div>
