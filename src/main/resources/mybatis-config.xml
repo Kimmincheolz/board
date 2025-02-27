@@ -10,5 +10,6 @@
     <typeAliases>
         <typeAlias alias="userDto" type="com.mc.board.dto.UserDto"/>
         <typeAlias alias="postDto" type="com.mc.board.dto.PostDto"/>
+        <typeAlias alias="likeDto" type="com.mc.board.dto.LikeDto"/>
     </typeAliases>
 </configuration>

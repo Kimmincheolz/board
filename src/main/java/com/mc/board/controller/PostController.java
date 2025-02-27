@@ -1,7 +1,9 @@
 package com.mc.board.controller;
 
 import com.mc.board.dto.PostDto;
+import com.mc.board.dto.LikeDto;
 import com.mc.board.service.PostService;
+import com.mc.board.service.LikeService;  // 추가
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,9 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private LikeService likeService;  // LikeService 주입
 
     // 게시글 목록 페이지
     @GetMapping("/post/post")
@@ -42,9 +47,11 @@ public class PostController {
     public String findPost(@PathVariable("postId") int postId, Model model, HttpSession session) {
         PostDto postDto = postService.findPost(postId);
         String loggedInUserId = (String) session.getAttribute("userId");
+        boolean likedByUser = likeService.isLikedByUser(postId, loggedInUserId); // 사용자가 좋아요한 상태 확인
 
         model.addAttribute("post", postDto);
         model.addAttribute("loggedInUserId", loggedInUserId);
+        model.addAttribute("likedByUser", likedByUser); // 좋아요 상태 전달
         postService.viewUpdate(postId);
         return "post/postDetail";
     }
@@ -52,55 +59,71 @@ public class PostController {
     // 게시글 수정 페이지
     @GetMapping("/post/edit/{postId}")
     public String editPostPage(@PathVariable("postId") int postId, Model model, HttpSession session) {
-        // 게시글 정보를 가져옴
         PostDto postDto = postService.findPost(postId);
         String loggedInUserId = (String) session.getAttribute("userId");
 
-        // 수정할 게시글 정보와 로그인된 사용자 ID를 모델에 추가
         if (loggedInUserId != null && loggedInUserId.equals(postDto.getUserId())) {
             model.addAttribute("post", postDto);
             return "post/postEditForm";  // 수정 폼으로 이동
         }
 
-        // 로그인된 사용자와 게시글 작성자가 다르면 수정 페이지에 접근하지 못하도록 처리
         return "redirect:/post/post";  // 목록 페이지로 리다이렉트
     }
 
     // 게시글 수정 처리
     @PostMapping("/post/edit/{postId}")
     public String updatePost(@PathVariable("postId") int postId, PostDto postDto, HttpSession session) {
-        // 세션에서 사용자 ID 가져오기
         String userId = (String) session.getAttribute("userId");
         postDto.setPostId(postId);
         postDto.setUserId(userId);
 
-        // 게시글 업데이트 서비스 호출
         postService.updatePost(postDto);
-
-        return "redirect:/post/post";  // 수정된 게시글 상세 페이지로 리다이렉트
+        return "redirect:/post/post";  // 수정된 게시글 목록 페이지로 리다이렉트
     }
+
+    // 게시글 삭제 처리
     @PostMapping("/post/delete/{postId}")
     public String deletePost(@PathVariable("postId") int postId, HttpSession session) {
-        // 세션에서 사용자 ID 가져오기
         String userId = (String) session.getAttribute("userId");
 
-        // 게시글 삭제를 위한 DTO 생성
         PostDto postDto = new PostDto();
         postDto.setPostId(postId);
         postDto.setUserId(userId);
 
-        // 게시글 삭제 서비스 호출
         int result = postService.deletePost(postDto);
 
-        // 삭제 성공 여부에 따른 처리
         if (result > 0) {
             return "redirect:/post/post";  // 삭제 후 게시글 목록 페이지로 리다이렉트
         } else {
-            // 삭제 실패 시 에러 메시지 전달
             return "redirect:/post/post?error=삭제 실패";  // 목록 페이지로 리다이렉트하고 에러 메시지 추가
         }
     }
 
+    // 좋아요 추가
+    @PostMapping("/post/like/{postId}")
+    public String insertLike(@PathVariable("postId") int postId, HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
 
+        LikeDto likeDto = new LikeDto();
+        likeDto.setUserId(userId);
+        likeDto.setPostId(postId);
 
+        likeService.insertLike(likeDto); // 좋아요 추가
+
+        return "redirect:/post/{postId}";  // 게시글 상세 페이지로 리다이렉트
+    }
+
+    // 좋아요 취소
+    @PostMapping("/post/unlike/{postId}")
+    public String deleteLike(@PathVariable("postId") int postId, HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+
+        LikeDto likeDto = new LikeDto();
+        likeDto.setUserId(userId);
+        likeDto.setPostId(postId);
+
+        likeService.deleteLike(likeDto); // 좋아요 취소
+
+        return "redirect:/post/{postId}";  // 게시글 상세 페이지로 리다이렉트
+    }
 }
