@@ -10,13 +10,13 @@ import java.util.List;
 public interface PostMapper {
 
     List<PostDto>postList();
-
+    //게시판 작성
     int insertPost(PostDto postDto);
 
     PostDto findPost(int postId);
 
     int viewUpdate(@Param("postId") int postId);
-
+    //게시판 수정
     int updatePost(PostDto postDto);
 
     int deletePost(PostDto postDto);

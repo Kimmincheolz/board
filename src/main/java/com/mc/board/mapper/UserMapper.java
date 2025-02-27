@@ -10,13 +10,13 @@ import java.util.List;
 public interface UserMapper {
 
     List<UserDto> userList();
-
+    //회원가입
     int insertUser(UserDto userDto);
-
+    // 아이디 중복 여부 체크
     UserDto overlapId(String userId);
-
+    // 이메일 중복 여부 체크
     UserDto overlapEmail(String email);
-
+    //로그인
     UserDto loginUser(String userId);
 
 

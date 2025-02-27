@@ -8,7 +8,20 @@
 
     <div th:replace="~{fragments/header.html}"></div>
     <main>
-        <h1>HOME</h1>
+        <h1>메인 페이지</h1>
+
+        <!-- 게시글 목록 출력 -->
+        <ul>
+            <li th:each="post : ${postList}">
+                <span th:text="${post.postId}">게시글 ID</span>
+                <a th:href="@{/post/{postId}(postId=${post.postId})}" th:text="${post.title}">게시글 제목</a>
+                <span><strong>작성자</strong> </span><span th:text="${post.userId}"></span>
+                <span><strong>작성일</strong> </span><span th:text="${post.createdAt}"></span>
+                <span><strong>수정일</strong> </span><span th:text="${post.updatedAt}"></span>
+                <span><strong>조회수</strong> </span><span th:text="${post.viewCount}"></span>
+                <span><strong>좋아요</strong> </span><span th:text="${post.likeCount}"></span>
+            </li>
+        </ul>
     </main>
 </body>
 </html>

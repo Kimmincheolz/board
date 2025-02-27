@@ -24,6 +24,15 @@ public class UserService {
         return userMapper.userList();
     }
 
+    //회원 가입
+    public int insertUser(UserDto userDto){
+        this.overlapId(userDto.getUserId());
+        this.overlapEmail(userDto.getEmail());
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(encodedPassword);
+        return userMapper.insertUser(userDto);
+    }
+
     // 아이디 중복 여부 체크
     public boolean checkIdAvailability(String userId) {
         UserDto existingUser = userMapper.overlapId(userId);
@@ -35,13 +44,7 @@ public class UserService {
         UserDto existingUser = userMapper.overlapEmail(email);
         return existingUser == null;  // null이면 사용 가능
     }
-    public int insertUser(UserDto userDto){
-        this.overlapId(userDto.getUserId());
-        this.overlapEmail(userDto.getEmail());
-        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
-        userDto.setPassword(encodedPassword);
-        return userMapper.insertUser(userDto);
-    }
+
 
     public void overlapId(String userId){
         UserDto findId = userMapper.overlapId(userId);

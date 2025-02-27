@@ -1,6 +1,8 @@
 package com.mc.board.controller;
 
+import com.mc.board.dto.PostDto;
 import com.mc.board.dto.UserDto;
+import com.mc.board.service.PostService;
 import com.mc.board.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,14 +13,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    private PostService postService;
     @GetMapping("/")
-    public String mainPage() {
+    public String mainPage(Model model) {
+        List<PostDto> postList = postService.postList();
+        model.addAttribute("postList", postList);
         return "index";  // index.html을 반환
     }
 
@@ -27,26 +35,6 @@ public class UserController {
     public String signupPage(Model model) {
         model.addAttribute("userDto", new UserDto());  // 빈 UserDto 객체를 모델에 추가
         return "user/signup";  // signup.html을 반환
-    }
-
-    // 아이디 중복 체크
-    @GetMapping("/check-id")
-    @ResponseBody
-    public Map<String, Object> checkId(@RequestParam("userId") String userId) {
-        Map<String, Object> response = new HashMap<>();
-        boolean available = userService.checkIdAvailability(userId);
-        response.put("available", available);
-        return response;
-    }
-
-    // 이메일 중복 체크
-    @GetMapping("/check-email")
-    @ResponseBody
-    public Map<String, Object> checkEmail(@RequestParam("email") String email) {
-        Map<String, Object> response = new HashMap<>();
-        boolean available = userService.checkEmailAvailability(email);
-        response.put("available", available);
-        return response;
     }
 
     // 회원가입 처리
@@ -60,6 +48,26 @@ public class UserController {
             return "signup";  // signup 페이지로 돌아가서 에러 메시지 표시
         }
     }
+    // 아이디 중복 체크
+    @GetMapping("/check-id")
+    @ResponseBody
+    public Map<String, Object> checkId(@RequestParam("userId") String userId) {
+        Map<String, Object> response = new HashMap<>();
+        boolean available = userService.checkIdAvailability(userId);
+        response.put("available", available);
+        return response;
+    }
+    // 이메일 중복 체크
+    @GetMapping("/check-email")
+    @ResponseBody
+    public Map<String, Object> checkEmail(@RequestParam("email") String email) {
+        Map<String, Object> response = new HashMap<>();
+        boolean available = userService.checkEmailAvailability(email);
+        response.put("available", available);
+        return response;
+    }
+
+
 
     // 로그인 화면
     @GetMapping("/user/login")

@@ -18,9 +18,11 @@ public class PostService {
     public List<PostDto> postList(){
         return postMapper.postList();
     }
+    //게시판 작성
     public int insertPost(PostDto postDto){
         return postMapper.insertPost(postDto);
     }
+
     public PostDto findPost(int postId){
         return postMapper.findPost(postId);
     }
@@ -28,7 +30,7 @@ public class PostService {
     public void viewUpdate(int postId){
         postMapper.viewUpdate(postId);
     }
-
+    //게시판 수정
     public int updatePost(PostDto postDto){
         return postMapper.updatePost(postDto);
     }
